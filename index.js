@@ -11,7 +11,7 @@ module.exports = class Eightball extends Plugin {
 
     powercord.api.commands.registerCommand({
       command: 'eightball',
-      aliases: ['8ball'],
+      aliases: [ '8ball' ],
       description: 'Ask the magic 8ball a question',
       usage: '{c} <your question> [--send]',
       executor: (args) => this.eightball(args)
@@ -67,7 +67,7 @@ module.exports = class Eightball extends Plugin {
 
     if (getSettings('useCustom')) {
       const custom = getSettings('customResponses');
-      const combined = [...answers, ...custom.map(x => x.value)].filter(x => x);
+      const combined = [ ...answers, ...custom.map(x => x.value) ].filter(x => x);
       answer = combined[Math.floor(Math.random() * combined.length)];
     } else {
       answer = answers[Math.floor(Math.random() * answers.length)];
