@@ -1,10 +1,10 @@
-const {getModuleByDisplayName, React} = require('powercord/webpack');
-const {Category, SwitchItem} = require('powercord/components/settings');
-const {Button, AsyncComponent} = require('powercord/components');
+const { getModuleByDisplayName, React } = require('powercord/webpack');
+const { Category, SwitchItem } = require('powercord/components/settings');
+const { Button, AsyncComponent } = require('powercord/components');
 const Input = AsyncComponent.from(getModuleByDisplayName('TextInput'));
 
 module.exports = class Settings extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       useCustom: props.getSetting('useCustom', true),
@@ -13,7 +13,7 @@ module.exports = class Settings extends React.Component {
     };
   }
 
-  render() {
+  render () {
     return (
       <div>
         <SwitchItem
@@ -26,7 +26,7 @@ module.exports = class Settings extends React.Component {
           name='Custom responses'
           description='List of custom 8ball responses'
           opened={this.state.responsesOpen}
-          onChange={() => this.setState({responsesOpen: !this.state.responsesOpen})}
+          onChange={() => this.setState({ responsesOpen: !this.state.responsesOpen })}
         >
           <div id='eightball-responses'>
             {this.generateInputs()}
@@ -36,29 +36,30 @@ module.exports = class Settings extends React.Component {
           disabled={!this.state.changes}
           onClick={() => {
             this._set('customResponses', this.state.customResponses);
-            this.state.changes = false
+            this.state.changes = false;
           }}
         >
           Save
         </Button>
       </div>
-    )
+    );
   }
 
-  _set(key, value = !this.state[key], defaultValue) {
+  _set (key, value = !this.state[key], defaultValue) {
     if (!value && defaultValue) {
-      value = defaultValue
+      value = defaultValue;
     }
 
     this.props.updateSetting(key, value);
-    this.setState({[key]: value})
+    this.setState({ [key]: value });
   }
 
 
-  generateInputs() {
-    let is = [...this.state.customResponses];
+  generateInputs () {
+    const is = [ ...this.state.customResponses ];
     if (is.length === 0) {
-      is.push({key: 0, value: ''})
+      is.push({ key: 0,
+        value: '' });
     }
 
     const dis = is.map((n, i) => (
@@ -66,32 +67,32 @@ module.exports = class Settings extends React.Component {
         key={n.key}
         defaultValue={n.value}
         onBlur={e => {
-          let a = is;
+          const a = is;
 
-          if (e.target.value === "") {
+          if (e.target.value === '') {
             a.splice(i, 1);
             if (a.length === 0) {
-              return
+              return;
             }
           } else {
             a[i].value = e.target.value;
           }
 
-          if (a[a.length - 1].value !== "") {
+          if (a[a.length - 1].value !== '') {
             a.push({
               key: a[a.length - 1].key + 1,
-              value: ""
-            })
+              value: ''
+            });
           }
 
-          this.setState({customResponses: a});
-          this.state.changes = true
+          this.setState({ customResponses: a });
+          this.state.changes = true;
         }}
         placeholder='Response'
-        style={{margin: "1%"}}
+        style={{ margin: '1%' }}
       />
     ));
 
-    return <div>{dis}</div>
+    return <div>{dis}</div>;
   }
 };
