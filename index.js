@@ -14,7 +14,17 @@ module.exports = class Eightball extends Plugin {
       aliases: [ '8ball' ],
       description: 'Ask the magic 8ball a question',
       usage: '{c} <your question> [--send]',
-      executor: (args) => this.eightball(args)
+      executor: (args) => {
+        if (args.length < 1) {
+          return {
+            avatar_url: 'https://i.imgur.com/Xx7xeD0.png',
+            username: 'Magic 8-ball',
+            send: false,
+            result: 'You must ask the magic 8ball a question.'
+          };
+        }
+        return this.eightball(args);
+      }
     });
   }
 
@@ -26,15 +36,7 @@ module.exports = class Eightball extends Plugin {
   async eightball (args) {
     let answer;
     let send = false;
-
-    if (args.length < 1) {
-      return {
-        avatar_url: 'https://i.imgur.com/Xx7xeD0.png',
-        username: 'Magic 8-ball',
-        send: false,
-        result: 'You must ask the magic 8ball a question.'
-      };
-    }
+    let result;
 
     if (args[args.length - 1] === '--send') {
       args.pop();
@@ -63,7 +65,6 @@ module.exports = class Eightball extends Plugin {
       'Signs point to yes.'
     ];
     const getSettings = (key, defaultValue) => this.settings.get(key, defaultValue);
-    let result = 'Something messed up...';
 
     if (getSettings('useCustom')) {
       const custom = getSettings('customResponses');
@@ -71,6 +72,16 @@ module.exports = class Eightball extends Plugin {
       answer = combined[Math.floor(Math.random() * combined.length)];
     } else {
       answer = answers[Math.floor(Math.random() * answers.length)];
+    }
+
+    // preventing question being empty because of --send.
+    if (args.length === 0) {
+      return {
+        avatar_url: 'https://i.imgur.com/Xx7xeD0.png',
+        username: 'Magic 8-ball',
+        send: false,
+        result: 'You must ask the magic 8ball a question.'
+      };
     }
 
     if (send) {
